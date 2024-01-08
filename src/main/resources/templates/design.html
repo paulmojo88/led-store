@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LED store</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+
+<body>
+<h1>Design your LED Light!</h1>
+<img th:src="@{/images/LEDstore.png}"/>
+
+<form method="POST" th:object="${light}">
+
+    <span class="validationError"
+          th:if="${#fields.hasErrors('features')}"
+          th:errors="*{features}">Feature Error</span>
+
+    <div class="grid">
+        <div class="feature-group" id="temperature3000">
+            <h3>Color temperature 3000K</h3>
+            <div th:each="feature : ${k3000}">
+                <input th:field="*{features}" type="checkbox"
+                       th:value="${feature.id}"/>
+                <span th:text="${feature.name}">FEATURE</span><br/>
+            </div>
+        </div>
+        <div class="feature-group" id="temperature4000">
+            <h3>Color temperature 4000K</h3>
+            <div th:each="feature : ${k4000}">
+                <input th:field="*{features}" type="checkbox"
+                       th:value="${feature.id}"/>
+                <span th:text="${feature.name}">FEATURE</span><br/>
+            </div>
+        </div>
+        <div class="feature-group" id="temperature5000">
+            <h3>Color temperature 5000K</h3>
+            <div th:each="feature : ${k5000}">
+                <input th:field="*{features}" type="checkbox"
+                       th:value="${feature.id}"/>
+                <span th:text="${feature.name}">FEATURE</span><br/>
+            </div>
+        </div>
+    </div>
+    <div>
+
+        <h3>Name your LED Light creation:</h3>
+        <input type="text" th:field="*{name}"/>
+        <span class="validationError"
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}">Name Error</span>
+        <br/>
+
+        <button>Submit Your LED Light</button>
+    </div>
+</form>
+</body>
+</html>
