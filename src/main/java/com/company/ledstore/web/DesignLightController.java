@@ -72,10 +72,9 @@ public class DesignLightController {
     }
 
     @PostMapping
-    public String processLEDLight(
+    public String processLight(
             @Valid Light light, Errors errors,
             @ModelAttribute LightOrder lightOrder) {
-
         if (errors.hasErrors()) {
             return "design";
         }
