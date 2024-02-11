@@ -1,29 +1,28 @@
 package com.company.ledstore;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
+@Table (name = "feature")
 public class Feature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
     @Enumerated(EnumType.STRING)
-    private Flux flux;
+    private final Flux flux;
     @Enumerated(EnumType.STRING)
-    private Power power;
+    private final Power power;
     @Enumerated(EnumType.STRING)
-    private Temperature temperature;
+    private final Temperature temperature;
     @Enumerated(EnumType.STRING)
-    private Length length;
+    private final Length length;
     @Enumerated(EnumType.STRING)
-    private Profile profile;
+    private final Profile profile;
     public enum Flux {LM1000, LM2000, LM4000}
     public enum Power {W10, W20, W40}
     public enum Temperature {K3000, K4000, K5000}

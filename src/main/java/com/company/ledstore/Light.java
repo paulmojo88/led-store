@@ -18,12 +18,13 @@ public class Light {
     @NotNull
     @Size(min=5, message="Name must be at least 5 characters long")
     private String name;
-    private Date createdAt = new Date();
+    private Date createdAt;
     @Size(min=1, message="You must choose at least 1 feature")
-    @ManyToMany()
-    private List<Feature> features = new ArrayList<>();
-    public void addFeature(Feature feature) {
-        this.features.add(feature);
+    @ManyToMany(targetEntity=Feature.class)
+    private List<Feature> features;
+    @PrePersist
+    void createdAt() {
+        this.createdAt = new Date();
     }
 
 }

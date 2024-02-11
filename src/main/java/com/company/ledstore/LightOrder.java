@@ -15,6 +15,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name="light_order")
 public class LightOrder implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -39,9 +40,15 @@ public class LightOrder implements Serializable {
     @Digits(integer=3, fraction=0, message="Invalid CVV")
     @Column(name = "cc_cvv")
     private String ccCVV;
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToOne
+    private User user;
+    @ManyToMany(targetEntity = Light.class)
     private List<Light> lights = new ArrayList<>();
     public void addLight(Light light) {
         this.lights.add(light);
+    }
+    @PrePersist
+    void placedAt() {
+        this.placedAt = new Date();
     }
 }

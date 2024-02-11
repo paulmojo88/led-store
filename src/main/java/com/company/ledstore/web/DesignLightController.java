@@ -3,7 +3,10 @@ package com.company.ledstore.web;
 import com.company.ledstore.Feature;
 import com.company.ledstore.Light;
 import com.company.ledstore.LightOrder;
+import com.company.ledstore.User;
 import com.company.ledstore.data.FeatureRepository;
+import com.company.ledstore.data.LightRepository;
+import com.company.ledstore.data.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +25,15 @@ import java.util.stream.Collectors;
 public class DesignLightController {
 
     private final FeatureRepository featureRepository;
+    private LightRepository lightRepository;
+    private UserRepository userRepository;
+
 
     @Autowired
-    public DesignLightController(FeatureRepository featureRepository) {
+    public DesignLightController(FeatureRepository featureRepository, LightRepository lightRepository, UserRepository userRepository) {
         this.featureRepository = featureRepository;
+        this.lightRepository = lightRepository;
+        this.userRepository = userRepository;
     }
 
     @ModelAttribute
@@ -66,6 +75,13 @@ public class DesignLightController {
         return new Light();
     }
 
+    @ModelAttribute(name = "user")
+    public User user(Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        return user;
+    }
+
     @GetMapping
     public String showDesignForm() {
         return "design";
@@ -78,7 +94,7 @@ public class DesignLightController {
         if (errors.hasErrors()) {
             return "design";
         }
-
+        Light saved = lightRepository.save(light);
         lightOrder.addLight(light);
 
         return "redirect:/orders/current";

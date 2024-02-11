@@ -7,8 +7,11 @@
 
 <body>
 <h1>Welcome to...</h1>
-<img th:src="@{/images/LEDstore.png}"/>
+    <img th:src="@{/images/LEDstore.png}"/>
+    <form method="POST" th:action="@{/logout}" id="logoutForm">
+        <input type="submit" value="Logout"/>
+    </form>
 
-<a th:href="@{/design}" id="design">Design a LED Light</a>
+    <a th:href="@{/design}" id="design">Design a LED Light</a>
 </body>
 </html>
