@@ -8,9 +8,14 @@
 
 <body>
 <h1>Design your LED Light!</h1>
+<h2>Feelin' dark, <span th:text="${user.fullName}">NAME</span>?</h2>
 <img th:src="@{/images/LEDstore.png}"/>
 
-<form method="POST" th:object="${light}">
+<form method="POST" th:action="@{/logout}" id="logoutForm">
+    <input type="submit" value="Logout"/>
+</form>
+
+<form method="POST" th:object="${light}" th:action="@{/design}" id="lightForm">
 
     <span class="validationError"
           th:if="${#fields.hasErrors('features')}"
