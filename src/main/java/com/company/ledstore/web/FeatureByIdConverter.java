@@ -1,24 +1,24 @@
 package com.company.ledstore.web;
 
-import com.company.ledstore.Feature;
-import com.company.ledstore.data.FeatureRepository;
+import com.company.ledstore.service.FeatureService;
+import com.company.ledstore.service.dto.FeatureDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FeatureByIdConverter implements Converter<String, Feature> {
+public class FeatureByIdConverter implements Converter<String, FeatureDTO> {
 
-    private FeatureRepository featureRepo;
+    private FeatureService featureService;
 
     @Autowired
-    public FeatureByIdConverter(FeatureRepository featureRepo) {
-        this.featureRepo = featureRepo;
+    public FeatureByIdConverter(FeatureService featureService) {
+        this.featureService = featureService;
     }
 
     @Override
-    public Feature convert(String id) {
-        return featureRepo.findById(Long.valueOf(id)).orElse(null);
+    public FeatureDTO convert(String id) {
+        return featureService.getById(Long.valueOf(id));
     }
 
 }

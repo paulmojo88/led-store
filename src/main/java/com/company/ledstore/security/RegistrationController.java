@@ -1,6 +1,7 @@
 package com.company.ledstore.security;
 
-import com.company.ledstore.data.UserRepository;
+import com.company.ledstore.service.UserService;
+import com.company.ledstore.service.dto.UserDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/register")
 public class RegistrationController {
 
-    private UserRepository userRepo;
+    private UserService userService;
     private PasswordEncoder passwordEncoder;
-
-    public RegistrationController(
-            UserRepository userRepo, PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
+    public RegistrationController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -26,8 +25,8 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public String processRegistration(RegistrationForm form) {
-        userRepo.save(form.toUser(passwordEncoder));
+    public String processRegistration(UserDTO userDTO) {
+        userService.create(userDTO.toUserDTO(passwordEncoder));
         return "redirect:/login";
     }
 
