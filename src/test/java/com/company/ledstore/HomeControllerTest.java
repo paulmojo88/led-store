@@ -1,12 +1,18 @@
 package com.company.ledstore;
 
-import com.company.ledstore.data.FeatureRepository;
-import com.company.ledstore.data.OrderRepository;
+import com.company.ledstore.data.repository.FeatureRepository;
+import com.company.ledstore.data.repository.LightOrderRepository;
+import com.company.ledstore.data.repository.LightRepository;
+import com.company.ledstore.data.repository.UserRepository;
+import com.company.ledstore.service.FeatureService;
+import com.company.ledstore.service.LightOrderService;
+import com.company.ledstore.service.LightService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,10 +28,19 @@ public class HomeControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private FeatureRepository featureRepository;
+    private FeatureService featureService;
 
     @MockBean
-    private OrderRepository orderRepository;
+    private LightService lightService;
+
+    @MockBean
+    private LightOrderService lightOrderService;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void testHomePage() throws Exception {
@@ -37,3 +52,10 @@ public class HomeControllerTest {
     }
 
 }
+
+
+
+
+
+
+

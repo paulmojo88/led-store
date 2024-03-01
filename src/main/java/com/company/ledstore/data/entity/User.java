@@ -1,4 +1,4 @@
-package com.company.ledstore;
+package com.company.ledstore.data.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,8 +19,8 @@ import java.util.Collection;
 
 @Data
 @Entity
-@NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Table (name = "\"user\"")
 public class User implements UserDetails {
     @Serial
@@ -28,16 +28,16 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
     @Column (name = "fullname")
-    private final String fullName;
-    private final String street;
-    private final String city;
-    private final String state;
-    private final String zip;
+    private String fullName;
+    private String street;
+    private String city;
+    private String state;
+    private String zip;
     @Column (name = "phonenumber")
-    private final String phoneNumber;
+    private String phoneNumber;
 
 
     @Override

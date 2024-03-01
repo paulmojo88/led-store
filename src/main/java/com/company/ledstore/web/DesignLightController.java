@@ -1,12 +1,12 @@
 package com.company.ledstore.web;
 
-import com.company.ledstore.Feature;
-import com.company.ledstore.Light;
-import com.company.ledstore.LightOrder;
-import com.company.ledstore.User;
-import com.company.ledstore.data.FeatureRepository;
-import com.company.ledstore.data.LightRepository;
-import com.company.ledstore.data.UserRepository;
+import com.company.ledstore.service.FeatureService;
+import com.company.ledstore.service.LightService;
+import com.company.ledstore.service.UserService;
+import com.company.ledstore.service.dto.FeatureDTO;
+import com.company.ledstore.service.dto.LightDTO;
+import com.company.ledstore.service.dto.LightOrderDTO;
+import com.company.ledstore.service.dto.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,64 +21,63 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/design")
-@SessionAttributes("lightOrder")
+@SessionAttributes("order")
 public class DesignLightController {
 
-    private final FeatureRepository featureRepository;
-    private LightRepository lightRepository;
-    private UserRepository userRepository;
+    private final FeatureService featureService;
+    private LightService lightService;
+    private UserService userService;
 
 
     @Autowired
-    public DesignLightController(FeatureRepository featureRepository, LightRepository lightRepository, UserRepository userRepository) {
-        this.featureRepository = featureRepository;
-        this.lightRepository = lightRepository;
-        this.userRepository = userRepository;
+    public DesignLightController(FeatureService featureService, LightService lightService, UserService userService) {
+        this.featureService = featureService;
+        this.lightService = lightService;
+        this.userService = userService;
     }
 
     @ModelAttribute
     public void addFeaturesToModel(Model model) {
-        List<Feature> features = new ArrayList<>();
-        featureRepository.findAll().forEach(i -> features.add(i));
+        List<FeatureDTO> features = new ArrayList<>();
+        featureService.findAll().forEach(i -> features.add(i));
 
-        Feature.Power[] powers = Feature.Power.values();
-        for (Feature.Power power : powers) {
+        FeatureDTO.Power[] powers = FeatureDTO.Power.values();
+        for (FeatureDTO.Power power : powers) {
             model.addAttribute(power.toString().toLowerCase(), filterByPower(features, power));
         }
-        Feature.Length[] lengths = Feature.Length.values();
-        for (Feature.Length length : lengths) {
-            model.addAttribute(length.toString().toLowerCase(),
-                    filterByLength(features, length));
+        FeatureDTO.Length[] lengths = FeatureDTO.Length.values();
+        for (FeatureDTO.Length length : lengths) {
+            model.addAttribute(length.toString().toLowerCase(), filterByLength(features, length));
         }
-        Feature.Flux[] fluxes = Feature.Flux.values();
-        for (Feature.Flux flux : fluxes) {
+        FeatureDTO.Flux[] fluxes = FeatureDTO.Flux.values();
+        for (FeatureDTO.Flux flux : fluxes) {
             model.addAttribute(flux.toString().toLowerCase(), filterByFlux(features, flux));
         }
-        Feature.Temperature[] temperatures = Feature.Temperature.values();
-        for (Feature.Temperature temperature : temperatures) {
+        FeatureDTO.Temperature[] temperatures = FeatureDTO.Temperature.values();
+        for (FeatureDTO.Temperature temperature : temperatures) {
             model.addAttribute(temperature.toString().toLowerCase(), filterByTemperature(features, temperature));
         }
-        Feature.Profile[] profiles = Feature.Profile.values();
-        for (Feature.Profile profile : profiles) {
+        FeatureDTO.Profile[] profiles = FeatureDTO.Profile.values();
+        for (FeatureDTO.Profile profile : profiles) {
             model.addAttribute(profile.toString().toLowerCase(), filterByProfile(features, profile));
         }
 
     }
 
-    @ModelAttribute(name = "lightOrder")
-    public LightOrder order() {
-        return new LightOrder();
+    @ModelAttribute(name = "lightOrderDTO")
+    public LightOrderDTO lightOrderDTO() {
+        return new LightOrderDTO();
     }
 
-    @ModelAttribute(name = "light")
-    public Light light() {
-        return new Light();
+    @ModelAttribute(name = "lightDTO")
+    public LightDTO lightDTO() {
+        return new LightDTO();
     }
 
-    @ModelAttribute(name = "user")
-    public User user(Principal principal) {
+    @ModelAttribute(name = "userDTO")
+    public UserDTO userDTO(Principal principal) {
         String username = principal.getName();
-        User user = userRepository.findByUsername(username);
+        UserDTO user = userService.findByUsername(username);
         return user;
     }
 
@@ -89,42 +88,42 @@ public class DesignLightController {
 
     @PostMapping
     public String processLight(
-            @Valid Light light, Errors errors,
-            @ModelAttribute LightOrder lightOrder) {
+            @Valid LightDTO light, Errors errors,
+            @ModelAttribute LightOrderDTO order) {
         if (errors.hasErrors()) {
             return "design";
         }
-        Light saved = lightRepository.save(light);
-        lightOrder.addLight(light);
+        LightDTO saved = lightService.create(light);
+        order.addLight(saved);
 
         return "redirect:/orders/current";
     }
 
-    private Iterable<Feature> filterByLength(List<Feature> features, Feature.Length length) {
+    private Iterable<FeatureDTO> filterByLength(List<FeatureDTO> features, FeatureDTO.Length length) {
         return features
                 .stream()
                 .filter(x -> x.getLength().equals(length))
                 .collect(Collectors.toList());
     }
-    private Iterable<Feature> filterByPower(List<Feature> features, Feature.Power power) {
+    private Iterable<FeatureDTO> filterByPower(List<FeatureDTO> features, FeatureDTO.Power power) {
         return features.stream()
                 .filter(x -> x.getPower().equals(power))
                 .collect(Collectors.toList());
     }
 
-    private Iterable<Feature> filterByFlux(List<Feature> features, Feature.Flux flux) {
+    private Iterable<FeatureDTO> filterByFlux(List<FeatureDTO> features, FeatureDTO.Flux flux) {
         return features.stream()
                 .filter(x -> x.getFlux().equals(flux))
                 .collect(Collectors.toList());
     }
 
-    private Iterable<Feature> filterByTemperature(List<Feature> features, Feature.Temperature temperature) {
+    private Iterable<FeatureDTO> filterByTemperature(List<FeatureDTO> features, FeatureDTO.Temperature temperature) {
         return features.stream()
                 .filter(x -> x.getTemperature().equals(temperature))
                 .collect(Collectors.toList());
     }
 
-    private Iterable<Feature> filterByProfile(List<Feature> features, Feature.Profile profile) {
+    private Iterable<FeatureDTO> filterByProfile(List<FeatureDTO> features, FeatureDTO.Profile profile) {
         return features.stream()
                 .filter(x -> x.getProfile().equals(profile))
                 .collect(Collectors.toList());

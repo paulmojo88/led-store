@@ -1,8 +1,11 @@
 package com.company.ledstore.web;
 
-import com.company.ledstore.LightOrder;
-import com.company.ledstore.User;
-import com.company.ledstore.data.OrderRepository;
+import com.company.ledstore.data.entity.User;
+import com.company.ledstore.service.LightOrderService;
+import com.company.ledstore.service.dto.LightOrderDTO;
+import com.company.ledstore.service.dto.UserDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -13,18 +16,22 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/orders")
-@SessionAttributes("lightOrder")
-public class OrderLightController {
+@SessionAttributes("order")
+public class LightOrderController {
 
-    private OrderRepository orderRepo;
+    private LightOrderService lightOrderService;
 
-    public OrderLightController(OrderRepository orderRepo) {
-        this.orderRepo = orderRepo;
+    private ModelMapper mapper;
+
+    @Autowired
+    public LightOrderController(LightOrderService lightOrderService, ModelMapper mapper) {
+        this.lightOrderService = lightOrderService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/current")
     public String orderForm(@AuthenticationPrincipal User user,
-                            @ModelAttribute LightOrder order) {
+                            @ModelAttribute LightOrderDTO order) {
         if (order.getDeliveryName() == null) {
             order.setDeliveryName(user.getFullName());
         }
@@ -43,17 +50,18 @@ public class OrderLightController {
 
         return "orderForm";
     }
+
     @PostMapping
-    public String processOrder(@Valid LightOrder order, Errors errors, SessionStatus sessionStatus,
+    public String processOrder(@Valid LightOrderDTO lightOrderDTO, Errors errors, SessionStatus sessionStatus,
                                @AuthenticationPrincipal User user) {
 
         if (errors.hasErrors()) {
             return "orderForm";
         }
+        UserDTO userDTO = mapper.map(user, UserDTO.class);
+        lightOrderDTO.setUser(userDTO);
 
-        order.setUser(user);
-
-        orderRepo.save(order);
+        lightOrderService.create(lightOrderDTO);
         sessionStatus.setComplete();
 
         return "redirect:/";

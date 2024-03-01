@@ -1,4 +1,4 @@
-package com.company.ledstore;
+package com.company.ledstore.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
